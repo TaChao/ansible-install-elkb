@@ -1,0 +1,3 @@
+[submodule "elk-stack-helm"]
+	path = elk-stack-helm
+	url = https://github.com/TaChao/elk-stack-helm.git
