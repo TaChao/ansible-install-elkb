@@ -1,0 +1,10 @@
+- name: copy helm package
+  copy:
+    src: "{{ playbook_dir }}/package/elk-stack.tgz"
+    dest: /tmp/elk-stack.tgz
+
+- name: install elk by helm
+  command: "helm install --name {{ cluster_name }} --set {{ params }} /tmp/elk-stack.tgz"
+
+- name: wait for cluster init success
+  command: "kubectl rollout status statefulset es-data"

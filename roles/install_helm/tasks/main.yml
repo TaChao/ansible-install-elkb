@@ -1,0 +1,30 @@
+- name: install helm
+  copy:
+    src: "{{ playbook_dir }}/package/helm"
+    dest: /usr/bin/helm
+    owner: root
+    group: root
+    mode: a+x
+
+- name: helm reset tiller version
+  command: "helm reset"
+
+- name: create helm serviceaccount
+  command: "kubectl create serviceaccount --namespace kube-system tiller"
+  ignore_errors: yes
+
+- name:  create helm clusterrolebinding
+  command: "kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller"
+  ignore_errors: yes
+
+- name: helm init
+  command: "helm init --tiller-image killonexx/tiller:v2.11.0"
+
+# - name: change tiller images
+#   command: "kubectl --namespace=kube-system set image deployments/tiller-deploy tiller=killonexx/tiller:v2.11.0"
+
+- name:  patch helm deploy
+  command: "kubectl patch deploy --namespace kube-system tiller-deploy -p '{\"spec\":{\"template\":{\"spec\":{\"serviceAccount\":\"tiller\"}}}}'"
+
+- name: wait for tiller service
+  command: "kubectl -n kube-system rollout status deployment tiller-deploy"

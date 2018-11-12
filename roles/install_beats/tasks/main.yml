@@ -1,0 +1,16 @@
+---
+- name: Copy rpm file to server
+  copy:
+    src: "{{ playbook_dir }}/package/{{ rpm_name }}"
+    dest: "/tmp/{{ rpm_name }}"
+
+- name: Install package.
+  yum:
+    name: "/tmp/{{ rpm_name }}"
+    state: present
+
+- name: Edit config
+  template:
+    src: "{{ playbook_dir }}/config/{{ config_name }}"
+    dest: "/etc/{{ service_name }}/{{ config_name }}"
+

@@ -1,0 +1,4 @@
+- hosts: k8s
+  roles: 
+  # install elk into kubernetes
+  - role: intall_gluster_client

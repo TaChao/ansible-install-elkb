@@ -1,0 +1,57 @@
+- hosts: k8s
+  roles: 
+  # install elk into kubernetes
+  - role: init
+
+- hosts: k8s-1
+  roles: 
+  # install elk into kubernetes
+  - role: install_elk
+    cluster_name: myesdb
+    params: pod.replicas.master=3,pod.replicas.data=3,pod.replicas.ingest=3,storage.storage_class=glusterfs
+
+- hosts: clinet_host
+  vars:
+    host_name: 192.168.250.200:31200
+    kibana_host: 192.168.250.200:31203
+  roles:
+  #Install packetbeat
+  - role: install_beats
+    config_name: packetbeat.yml
+    rpm_name: packetbeat.rpm
+    service_name: packetbeat
+  #Install metricbeat
+  - role: install_beats
+    config_name: metricbeat.yml
+    rpm_name: metricbeat.rpm
+    service_name: metricbeat
+  #Install filebeat
+  - role: install_beats
+    config_name: filebeat.yml
+    rpm_name: filebeat.rpm
+    service_name: filebeat
+    # 注意多行情况下从第二行开始需要自定加空格保证yaml文件格式正确
+    log_paths: |
+      - /var/log/*.log
+          - /var/log/logs/*.log
+          - /var/log/a.log
+  #Install auditbeat
+  - role: install_beats
+    config_name: auditbeat.yml
+    rpm_name: auditbeat.rpm
+    service_name: auditbeat
+
+- hosts: clinet_host
+  roles: 
+  # init packetbeat dashboard
+  - role: init_dashboard
+    command_name: packetbeat
+  # init metricbeat dashboard
+  - role: init_dashboard
+    command_name: metricbeat
+  # init filebeat dashboard
+  - role: init_dashboard
+    command_name: filebeat
+  # init auditbeat dashboard
+  - role: init_dashboard
+    command_name: auditbeat

@@ -1,0 +1,8 @@
+- name: install gluster client
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - glusterfs 
+    - glusterfs-fuse 
+    - attr
