@@ -1,10 +1,23 @@
-- name: copy helm package
+- name: delete if exist
+  shell: /bin/rm -rf /tmp/* 
+
+- name: archive and copy helm package
   copy:
     src: "{{ playbook_dir }}/package/elk-stack.tgz"
-    dest: /tmp/elk-stack.tgz
+    dest: "/tmp/elk-stack.tgz"
+
+# - name: copy config file
+#   copy:
+#     src: "{{ playbook_dir }}/config/values.yaml"
+#     dest: "/tmp/values.yaml"
+
+- name: Edit config
+  template:
+    src: "{{ playbook_dir }}/config/values.yaml"
+    dest: "/tmp/values.yaml"
 
 - name: install elk by helm
-  command: "helm install --name {{ cluster_name }} --set {{ params }} /tmp/elk-stack.tgz"
+  command: "helm install --name {{ cluster_name }} --set {{ params }} /tmp/elk-stack.tgz -f /tmp/values.yaml"
 
 - name: wait for cluster init success
-  command: "kubectl rollout status statefulset es-data"
+  command: "kubectl rollout status statefulset es-data -n {{ elk_namespace }}"

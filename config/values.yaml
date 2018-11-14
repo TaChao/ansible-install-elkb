@@ -1,0 +1,124 @@
+# Default values for elk-stack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  tag:
+    init: busybox:1.27.2
+    elasticsearch: killonexx/elasticsearch:6.4.2
+    logstash: killonexx/logstash:6.4.2
+    kibana: killonexx/kibana:6.4.2
+    beats:
+      packetbeats: docker.elastic.co/beats/packetbeat:6.4.2
+      filebeats: docker.elastic.co/beats/filebeat:6.4.2
+  pullPolicy: IfNotPresent
+  local_registry:
+    active: false
+    exclude:
+      - dep_check
+      - image_repo_sync
+
+pod:
+  replicas:
+    master: 3
+    data: 3
+    ingest: 3
+  resources:
+    enabled: true
+    unit:
+      memory: "Gi"
+      cpu: ""
+    master:
+      requests:
+        memory: "2"
+        cpu: "2"
+      limits:
+        memory: 
+        cpu: 
+    data:
+      requests:
+        memory: "8"
+        cpu: "4"
+      limits:
+        memory: 
+        cpu: 
+    ingest:
+      requests:
+        memory: "4"
+        cpu: "2"
+      limits:
+        memory: 
+        cpu: 
+
+conf:
+  init:
+    max_map_count: 262144
+  cluster:
+    name: myesdb
+  elasticsearch:
+    disable_xpack: false 
+    env:
+      data:
+        java_opts: -Xms4g -Xmx4g
+      master:
+        java_opts: -Xms1g -Xmx1g
+      ingest:
+        java_opts: -Xms2g -Xmx2g
+  kibana:
+  #Recommend running Kibana separate from your Elasticsearch 'data' or 'master' nodes
+    config_map:
+      elasticsearch_url: http://elasticsearch:9200
+      elasticsearch_master_url: http://elasticsearch-master:9200
+
+storage:
+  enabled: true
+  pvc:
+    name: pvc-elastic
+    access_mode: [ "ReadWriteOnce" ]
+  requests:
+    storage:
+      master: 5Gi
+      data: 20Gi
+  storage_class: gluster
+
+endpoints:
+  namespace: {{ elk_namespace }}
+  specific_nodeport: true
+  elasticsearch:
+    port:
+      client:
+        default: 9200
+        node_port: 31200
+      http:
+        default: 80
+      discovery:
+        default: 9300
+      ingest:
+        node_port: 31201
+  kibana:
+    port:
+      ui:
+        default: 5601
+      http:
+        node_port: 31203
+        default: 80
+  logstash:
+    port:
+      tcp:
+        default: 12345
+        node_port: 31202
+
+manifests:
+  statfulset_data: true
+  statfulset_master: false
+  deployment_master: true
+  deployment_ingest: true
+  deployment_kibana: true
+  deployment_logstash: true
+  deployment_kibana_kubeproxy: false
+  config_kibana: true
+  config_kibana_master: false
+  kibana_service: true
+  master_service: true
+  ingest_service: true
+  data_service: true
+  kibana_kubeproxy_service: false

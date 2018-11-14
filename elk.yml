@@ -1,3 +1,15 @@
+# package submodule
+- hosts: localhost
+  tasks:
+  - name: git update submodule
+    command: git submodule update --recursive --remote
+    args:
+      chdir: "{{ playbook_dir }}"
+  - name: archive helm project to package floor
+    archive:
+      path: "{{ playbook_dir }}/elk-stack-helm"
+      dest: "{{ playbook_dir }}/package/elk-stack.tgz"
+
 - hosts: k8s
   roles: 
   # install elk into kubernetes
@@ -8,7 +20,8 @@
   # install elk into kubernetes
   - role: install_elk
     cluster_name: myesdb
-    params: pod.replicas.master=3,pod.replicas.data=3,pod.replicas.ingest=3,storage.storage_class=glusterfs
+    params: pod.replicas.master=3,pod.replicas.data=3,pod.replicas.ingest=3,storage.storage_class=rook
+    elk_namespace: elk-stack
 
 - hosts: clinet_host
   vars:
@@ -55,3 +68,19 @@
   # init auditbeat dashboard
   - role: init_dashboard
     command_name: auditbeat
+  
+- hosts: clinet_host
+  roles: 
+  # start service : packetbeat 
+  - role: start_service
+    service_name: packetbeat
+  # istart service : metricbeat
+  - role: start_service
+    service_name: metricbeat
+  # start service : filebeat 
+  - role: start_service
+    service_name: filebeat
+  # start service :auditbeat
+  - role: start_service
+    service_name: auditbeat
+
