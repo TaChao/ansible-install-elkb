@@ -15,7 +15,7 @@
   # install elk into kubernetes
   - role: init
 
-- hosts: k8s-1
+- hosts: helm_host
   roles: 
   # install elk into kubernetes
   - role: install_elk
