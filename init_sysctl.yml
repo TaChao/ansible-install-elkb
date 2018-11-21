@@ -1,4 +1,0 @@
-- hosts: k8s
-  roles: 
-  # install elk into kubernetes
-  - role: init

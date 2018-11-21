@@ -1,4 +1,4 @@
-- hosts: k8s
+- hosts: k8s-rancher
   tasks:
     - name: stop and disable firewall
       systemd: 

@@ -23,7 +23,7 @@
     params: pod.replicas.master=3,pod.replicas.data=3,pod.replicas.ingest=3,storage.storage_class=rook
     elk_namespace: elk-stack
 
-- hosts: clinet_host
+- hosts: client_host
   vars:
     host_name: 192.168.250.200:31200
     kibana_host: 192.168.250.200:31203
@@ -54,7 +54,7 @@
     rpm_name: auditbeat.rpm
     service_name: auditbeat
 
-- hosts: clinet_host
+- hosts: client_host
   roles: 
   # init packetbeat dashboard
   - role: init_dashboard
@@ -69,7 +69,7 @@
   - role: init_dashboard
     command_name: auditbeat
   
-- hosts: clinet_host
+- hosts: client_host
   roles: 
   # start service : packetbeat 
   - role: start_service

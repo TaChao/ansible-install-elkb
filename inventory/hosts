@@ -5,8 +5,11 @@ k8s-2 ansible_host=192.168.250.201 ansible_ssh_user=root ansible_ssh_pass=awclou
 k8s-3 ansible_host=192.168.250.202 ansible_ssh_user=root ansible_ssh_pass=awcloud
 k8s-4 ansible_host=192.168.250.203 ansible_ssh_user=root ansible_ssh_pass=awcloud
 
+k8s-5 ansible_host=192.168.250.124 ansible_ssh_user=root ansible_ssh_pass=awcloud
+k8s-6 ansible_host=192.168.250.125 ansible_ssh_user=root ansible_ssh_pass=awcloud
+k8s-7 ansible_host=192.168.250.126 ansible_ssh_user=root ansible_ssh_pass=awcloud
 
-[clinet_host]
+[client_host]
 host4
 [helm_host]
 k8s-1
@@ -15,3 +18,7 @@ k8s-1
 k8s-2
 k8s-3
 k8s-4
+[k8s-rancher]
+k8s-5
+k8s-6
+k8s-7
