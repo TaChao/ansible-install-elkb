@@ -2,7 +2,7 @@
 - hosts: localhost
   tasks:
   - name: git update submodule
-    command: git submodule update --recursive --remote
+    command: git submodule init && git submodule update && git submodule update --recursive --remote
     args:
       chdir: "{{ playbook_dir }}"
   - name: archive helm project to package floor
@@ -19,9 +19,9 @@
   roles: 
   # install elk into kubernetes
   - role: install_elk
-    cluster_name: myesdb
+    cluster_name: awcloud-log
     params: pod.replicas.master=3,pod.replicas.data=3,pod.replicas.ingest=3,storage.storage_class=rook
-    elk_namespace: elk-stack
+    elk_namespace: awcloud-log
 
 - hosts: client_host
   vars:
