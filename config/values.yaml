@@ -53,7 +53,7 @@ conf:
   init:
     max_map_count: 262144
   cluster:
-    name: myesdb
+    name: {{ cluster_name }}
   elasticsearch:
     disable_xpack: false 
     env:

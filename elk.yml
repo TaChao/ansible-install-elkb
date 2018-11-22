@@ -1,8 +1,12 @@
 # package submodule
 - hosts: localhost
   tasks:
+  - name: init submodule
+    command: git submodule init && git submodule update
+    ignore_errors: yes
+
   - name: git update submodule
-    command: git submodule init && git submodule update && git submodule update --recursive --remote
+    command:  git submodule update --recursive --remote
     args:
       chdir: "{{ playbook_dir }}"
   - name: archive helm project to package floor
